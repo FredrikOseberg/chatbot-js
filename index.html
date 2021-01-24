@@ -11,5 +11,44 @@
 <body>
     <div class="vanilla-chatbot"></div>
     <script src="src/index.js" type="module"></script>
+    <script type="module">
+     const { renderChatbot, createChatBotMessage } = window.vanillaJsChatbot;
+
+    const rootEl = document.querySelector(".vanilla-chatbot");
+    const config = {
+        botName: "Vanillabot",
+        initialMessages: [createChatBotMessage(`Hello world`)],
+    };
+        // MessageParser starter code
+            class MessageParser {
+                constructor(actionProvider) {
+                    this.actionProvider = actionProvider;
+                }
+
+                parse(message) {
+                    if (message.includes("hello")) {
+                        this.actionProvider.hello()
+                    }
+                }
+            }
+
+            // ActionProvider starter code
+            class ActionProvider {
+                constructor(createChatBotMessage, setStateFunc, createClientMessage) {
+                    this.createChatBotMessage = createChatBotMessage;
+                    this.setState = setStateFunc;
+                    this.createClientMessage = createClientMessage;
+                }
+
+                hello() {
+                    const message = this.createChatBotMessage("Hello from chatbot")
+                    this.setState((state) => {
+                        return { ...state, messages: [...state.messages, message]}
+                    })
+                }
+            }
+            
+            renderChatbot(rootEl, config, MessageParser, ActionProvider)
+    </script>
 </body>
 </html>

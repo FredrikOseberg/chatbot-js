@@ -1,4 +1,6 @@
-const renderChat = (config, state) => {
+import { createClientMessage } from "../utils.js";
+
+const renderChat = (config, state, messageParserInstance, updater) => {
   const chatContainer = document.createElement("div");
   chatContainer.classList.add("vanilla-chatbot-kit-chat-container");
 
@@ -7,7 +9,7 @@ const renderChat = (config, state) => {
 
   innerContainer.appendChild(createHeader(config));
   innerContainer.appendChild(createMessageContainer(state.messages));
-  innerContainer.appendChild(createForm());
+  innerContainer.appendChild(createForm(messageParserInstance, updater));
 
   chatContainer.appendChild(innerContainer);
   return chatContainer;
@@ -40,7 +42,8 @@ const createMessageContainer = (messages) => {
   return container;
 };
 
-const createForm = () => {
+const createForm = (messageParserInstance, updater) => {
+  console.log(messageParserInstance);
   const container = document.createElement("div");
   container.classList.add("vanilla-chatbot-kit-chat-input-container");
 
@@ -53,6 +56,19 @@ const createForm = () => {
 
   const btn = document.createElement("button");
   btn.classList.add("vanilla-chatbot-kit-chat-btn-send");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { value } = input;
+    const message = createClientMessage(value);
+    updater((state) => {
+      return { ...state, messages: [...state.messages, message] };
+    });
+    messageParserInstance.parse(value);
+    input.value = "";
+  };
+
+  form.onsubmit = handleSubmit;
 
   const img = document.createElement("img");
   img.src = "/assets/icons/paper-plane.svg";

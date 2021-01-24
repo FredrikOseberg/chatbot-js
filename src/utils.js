@@ -30,6 +30,10 @@ export const createChatBotMessage = (message, options) => {
   };
 };
 
+export const createClientMessage = (message) => {
+  return createChatMessage(message, "user");
+};
+
 export const callIfExists = (func, ...args) => {
   if (func) {
     return func(...args);
