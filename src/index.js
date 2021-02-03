@@ -1,11 +1,19 @@
 import renderChat from "./chat/chat.js";
-import { createChatBotMessage, createClientMessage } from "./utils.js";
+import {
+  createChatBotMessage,
+  createClientMessage,
+  getWidgets,
+} from "./utils.js";
 import stateManager from "./state/state.js";
+import WidgetRegistry from "./widgetRegistry/widgetRegistry.js";
 
 let current;
 
 const renderChatbot = (rootEl, config, messageParser, actionProvider) => {
-  const intialState = { messages: [...config.initialMessages] };
+  const intialState = {
+    messages: [...config.initialMessages],
+    ...config.state,
+  };
   const [state, updater, registerListeners] = stateManager(intialState);
 
   const actionProviderInstance = new actionProvider(
@@ -15,19 +23,53 @@ const renderChatbot = (rootEl, config, messageParser, actionProvider) => {
   );
   const messageParserInstance = new messageParser(actionProviderInstance);
 
+  const widgetRegistry = new WidgetRegistry(
+    updater,
+    actionProviderInstance
+  );
+  const widgets = getWidgets(config);
+  widgets.forEach((widget) => widgetRegistry.addWidget(widget));
+
   registerListeners((newState) =>
-    render(rootEl, newState, messageParserInstance, config, updater)
+    render(
+      rootEl,
+      newState,
+      messageParserInstance,
+      config,
+      updater,
+      widgetRegistry
+    )
   );
 
-  render(rootEl, state, messageParserInstance, config, updater);
+  render(
+    rootEl,
+    state,
+    messageParserInstance,
+    config,
+    updater,
+    widgetRegistry
+  );
 };
 
-const render = (rootEl, state, messageParserInstance, config, updater) => {
+const render = (
+  rootEl,
+  state,
+  messageParserInstance,
+  config,
+  updater,
+  widgetRegistry
+) => {
   if (current) {
     rootEl.removeChild(current);
   }
 
-  const chat = renderChat(config, state, messageParserInstance, updater);
+  const chat = renderChat(
+    config,
+    state,
+    messageParserInstance,
+    updater,
+    widgetRegistry
+  );
   current = chat;
   rootEl.appendChild(chat);
 };

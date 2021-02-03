@@ -39,3 +39,15 @@ export const callIfExists = (func, ...args) => {
     return func(...args);
   }
 };
+
+export const getObject = (object) => {
+  if (typeof object === "object") return object;
+  return {};
+};
+
+export const getWidgets = (config) => {
+  if (config.widgets) {
+    return config.widgets;
+  }
+  return [];
+};

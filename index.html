@@ -14,10 +14,42 @@
     <script type="module">
      const { renderChatbot, createChatBotMessage } = window.vanillaJsChatbot;
 
+     const inputFieldWidget = (props) => {
+         const { setState } = props;
+
+         const updateInput = (e) => {
+            const value = e.target.value;
+
+            setState(prev => ({ ...prev, input: value }))
+         }
+
+         const container = document.createElement("div")
+         const input = document.createElement("input")
+         input.onchange = updateInput;
+         const output = document.createElement("div")
+         output.textContent = props.input;
+         
+         container.appendChild(input);
+         container.appendChild(output);
+
+         return container;
+     }
+
     const rootEl = document.querySelector(".vanilla-chatbot");
     const config = {
         botName: "Vanillabot",
-        initialMessages: [createChatBotMessage(`Hello world`)],
+        initialMessages: [createChatBotMessage(`Hello world`, { widget: "inputFieldWidget" })],
+        state: {
+            "input": ""
+        },
+        widgets: [
+            {
+                widgetName: "inputFieldWidget",
+                widgetFunc: inputFieldWidget,
+                mapStateToProps: ["input"],
+                props: {}
+            },
+        ]
     };
         // MessageParser starter code
             class MessageParser {

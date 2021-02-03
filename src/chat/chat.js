@@ -1,6 +1,12 @@
 import { createClientMessage } from "../utils.js";
 
-const renderChat = (config, state, messageParserInstance, updater) => {
+const renderChat = (
+  config,
+  state,
+  messageParserInstance,
+  updater,
+  widgetRegistry
+) => {
   const chatContainer = document.createElement("div");
   chatContainer.classList.add("vanilla-chatbot-kit-chat-container");
 
@@ -8,7 +14,9 @@ const renderChat = (config, state, messageParserInstance, updater) => {
   innerContainer.classList.add("vanilla-chatbot-kit-chat-inner-container");
 
   innerContainer.appendChild(createHeader(config));
-  innerContainer.appendChild(createMessageContainer(state.messages));
+  innerContainer.appendChild(
+    createMessageContainer(state.messages, widgetRegistry, state)
+  );
   innerContainer.appendChild(createForm(messageParserInstance, updater));
 
   chatContainer.appendChild(innerContainer);
@@ -23,7 +31,7 @@ const createHeader = (config) => {
   return header;
 };
 
-const createMessageContainer = (messages) => {
+const createMessageContainer = (messages, widgetRegistry, state) => {
   const container = document.createElement("div");
   container.classList.add("vanilla-chatbot-kit-chat-message-container");
 
@@ -31,7 +39,7 @@ const createMessageContainer = (messages) => {
     const { message, type } = mes;
 
     if (type === "bot") {
-      const botMessage = createBotChatMessage(message);
+      const botMessage = createBotChatMessage(mes, widgetRegistry, state);
       container.appendChild(botMessage);
     } else {
       const userMessage = createUserChatMessage(message);
@@ -115,7 +123,13 @@ const createUserChatMessage = (message) => {
   return container;
 };
 
-const createBotChatMessage = (message) => {
+const createBotChatMessage = (mes, widgetRegistry, state) => {
+  const { message, widget } = mes;
+
+  const outerContainer = document.createElement("div");
+  outerContainer.style.display = "flex";
+  outerContainer.style.flexDirection = "column";
+
   const container = document.createElement("div");
   container.classList.add(
     "vanilla-chatbot-kit-chat-bot-message-container"
@@ -143,7 +157,18 @@ const createBotChatMessage = (message) => {
   container.appendChild(avatarContainer);
   container.appendChild(messageContainer);
 
-  return container;
+  outerContainer.appendChild(container);
+
+  const widgetContainer = document.createElement("div");
+
+  if (widget) {
+    const widgetMarkup = widgetRegistry.getWidget(widget, state);
+    widgetContainer.appendChild(widgetMarkup);
+  }
+
+  outerContainer.appendChild(widgetContainer);
+
+  return outerContainer;
 };
 
 export default renderChat;
