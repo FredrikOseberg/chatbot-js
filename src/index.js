@@ -3,13 +3,34 @@ import {
   createChatBotMessage,
   createClientMessage,
   getWidgets,
+  scrollIntoView,
+  validateProps,
 } from "./utils.js";
+import { createErrorMessage } from "./chat/errorMessage.js";
 import stateManager from "./state/state.js";
 import WidgetRegistry from "./widgetRegistry/widgetRegistry.js";
 
 let current;
 
 const renderChatbot = (rootEl, config, messageParser, actionProvider) => {
+  if (!config || !messageParser || !actionProvider) {
+    return renderErrorMessage(
+      rootEl,
+      "I think you forgot to feed me some props. Did you remember to pass a config, a messageparser and an actionprovider?"
+    );
+  }
+
+  const propsErrors = validateProps(config, messageParser);
+
+  if (propsErrors.length) {
+    const errorMessage = propsErrors.reduce((prev, cur) => {
+      prev += cur;
+      return prev;
+    }, "");
+
+    return renderErrorMessage(rootEl, errorMessage);
+  }
+
   const intialState = {
     messages: [...config.initialMessages],
     ...config.state,
@@ -51,6 +72,15 @@ const renderChatbot = (rootEl, config, messageParser, actionProvider) => {
   );
 };
 
+const renderErrorMessage = (rootEl, message) => {
+  if (current) {
+    rootEl.removeChild(current);
+  }
+
+  const errorMessage = createErrorMessage(message);
+  rootEl.appendChild(errorMessage);
+};
+
 const render = (
   rootEl,
   state,
@@ -72,6 +102,13 @@ const render = (
   );
   current = chat;
   rootEl.appendChild(chat);
+
+  const inputField = document.querySelector(
+    ".vanilla-chatbot-kit-chat-input"
+  );
+
+  inputField.focus();
+  scrollIntoView();
 };
 
 window.vanillaJsChatbot = { renderChatbot, createChatBotMessage };

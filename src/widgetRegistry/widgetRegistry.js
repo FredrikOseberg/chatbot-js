@@ -1,4 +1,4 @@
-import { getObject } from "../utils.js";
+import { getObject, scrollIntoView } from "../utils.js";
 
 class WidgetRegistry {
   constructor(setStateFunc, actionProvider) {
@@ -21,6 +21,7 @@ class WidgetRegistry {
     if (!widgetObject) return;
 
     let props = {
+      scrollIntoView,
       ...getObject(widgetObject.props),
       ...this.mapStateToProps(widgetObject.mapStateToProps, state),
       setState: this.setState,

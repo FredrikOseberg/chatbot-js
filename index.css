@@ -161,6 +161,7 @@ p {
 .vanilla-chatbot-kit-chat-bot-avatar-container {
   width: 40px;
   height: 40px;
+  min-width: 40px;
   border-radius: 50%;
   font-size: 1.2rem;
   margin-right: 12.5px;
@@ -225,6 +226,34 @@ p {
 #chatbot-loader #chatbot-loader-dot3 {
   animation: load 1s infinite;
   animation-delay: 0.4s;
+}
+
+.vanilla-chatbot-kit-error {
+  background-color: #fff;
+  border-radius: 3px;
+  padding: 15px;
+}
+
+.vanilla-chatbot-kit-error-container {
+  width: 260px;
+}
+
+.vanilla-chatbot-kit-error-header {
+  font-size: 1.3rem;
+  color: #1d1d1d;
+  margin-bottom: 30px;
+}
+
+.vanilla-chatbot-kit-error-docs {
+  display: block;
+  margin: 25px auto;
+  color: rgb(56, 104, 139);
+  padding: 8px;
+  border: 1px solid rgb(40, 152, 236);
+  width: 130px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1rem;
 }
 
 @keyframes load {

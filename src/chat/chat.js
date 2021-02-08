@@ -1,5 +1,7 @@
 import { createClientMessage } from "../utils.js";
 
+const DEFAULT_MESSAGE_LOADING_TIME = 750;
+
 const renderChat = (
   config,
   state,
@@ -15,7 +17,7 @@ const renderChat = (
 
   innerContainer.appendChild(createHeader(config));
   innerContainer.appendChild(
-    createMessageContainer(state.messages, widgetRegistry, state)
+    createMessageContainer(state.messages, widgetRegistry, state, updater)
   );
   innerContainer.appendChild(createForm(messageParserInstance, updater));
 
@@ -31,7 +33,12 @@ const createHeader = (config) => {
   return header;
 };
 
-const createMessageContainer = (messages, widgetRegistry, state) => {
+const createMessageContainer = (
+  messages,
+  widgetRegistry,
+  state,
+  updater
+) => {
   const container = document.createElement("div");
   container.classList.add("vanilla-chatbot-kit-chat-message-container");
 
@@ -39,7 +46,12 @@ const createMessageContainer = (messages, widgetRegistry, state) => {
     const { message, type } = mes;
 
     if (type === "bot") {
-      const botMessage = createBotChatMessage(mes, widgetRegistry, state);
+      const botMessage = createBotChatMessage(
+        mes,
+        widgetRegistry,
+        state,
+        updater
+      );
       container.appendChild(botMessage);
     } else {
       const userMessage = createUserChatMessage(message);
@@ -51,7 +63,6 @@ const createMessageContainer = (messages, widgetRegistry, state) => {
 };
 
 const createForm = (messageParserInstance, updater) => {
-  console.log(messageParserInstance);
   const container = document.createElement("div");
   container.classList.add("vanilla-chatbot-kit-chat-input-container");
 
@@ -123,12 +134,16 @@ const createUserChatMessage = (message) => {
   return container;
 };
 
-const createBotChatMessage = (mes, widgetRegistry, state) => {
-  const { message, widget } = mes;
+export const createBotChatMessage = (
+  mes,
+  widgetRegistry,
+  state,
+  updater
+) => {
+  const { message, widget, loading, id } = mes;
+  console.log(mes);
 
   const outerContainer = document.createElement("div");
-  outerContainer.style.display = "flex";
-  outerContainer.style.flexDirection = "column";
 
   const container = document.createElement("div");
   container.classList.add(
@@ -146,7 +161,22 @@ const createBotChatMessage = (mes, widgetRegistry, state) => {
 
   const messageContainer = document.createElement("div");
   messageContainer.classList.add("vanilla-chatbot-kit-chat-bot-message");
-  messageContainer.textContent = message;
+
+  if (loading) {
+    const loader = createLoader();
+    messageContainer.appendChild(loader);
+
+    setTimeout(() => {
+      updater((state) => {
+        const newMessage = state.messages.find((mes) => mes.id === id);
+        newMessage.loading = false;
+
+        return state;
+      });
+    }, DEFAULT_MESSAGE_LOADING_TIME);
+  } else {
+    messageContainer.textContent = message;
+  }
 
   const arrow = document.createElement("div");
   arrow.classList.add("vanilla-chatbot-kit-chat-bot-message-arrow");
@@ -169,6 +199,29 @@ const createBotChatMessage = (mes, widgetRegistry, state) => {
   outerContainer.appendChild(widgetContainer);
 
   return outerContainer;
+};
+
+const createLoader = () => {
+  const container = document.createElement("div");
+  container.classList.add("chatbot-loader-container");
+  container.innerHTML = `<svg
+        id="dots"
+        width="50px"
+        height="21px"
+        viewBox="0 0 132 58"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g stroke="none" fill="none">
+          <g id="chatbot-loader" fill="#fff">
+            <circle id="chatbot-loader-dot1" cx="25" cy="30" r="13"></circle>
+            <circle id="chatbot-loader-dot2" cx="65" cy="30" r="13"></circle>
+            <circle id="chatbot-loader-dot3" cx="105" cy="30" r="13"></circle>
+          </g>
+        </g>
+      </svg>`;
+
+  return container;
 };
 
 export default renderChat;

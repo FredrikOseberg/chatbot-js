@@ -51,3 +51,29 @@ export const getWidgets = (config) => {
   }
   return [];
 };
+
+export const scrollIntoView = () => {
+  const chatContainer = document.querySelector(
+    ".vanilla-chatbot-kit-chat-message-container"
+  );
+
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+};
+
+export const validateProps = (config, MessageParser) => {
+  const errors = [];
+  if (!config.initialMessages) {
+    errors.push(
+      "Config must contain property 'initialMessages', and it expects it to be an array of chatbotmessages."
+    );
+  }
+
+  const messageParser = new MessageParser();
+  if (!messageParser["parse"]) {
+    errors.push(
+      "Messageparser must implement the method 'parse', please add this method to your object. The signature is parse(message: string)."
+    );
+  }
+
+  return errors;
+};
