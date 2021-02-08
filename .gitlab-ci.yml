@@ -16,6 +16,8 @@ build-package:
 release-package:
   stage: deploy
   image: node:latest
+  dependencies:
+    - build
   script:
     - git config --global user.email "fredrik.no@gmail.com"
     - git config --global user.name "Fredrik Strand Oseberg"
