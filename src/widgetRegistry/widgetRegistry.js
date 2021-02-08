@@ -7,7 +7,6 @@ class WidgetRegistry {
   }
 
   addWidget = ({ widgetName, widgetFunc, mapStateToProps, props }) => {
-    console.log("ADDING WIDGET", widgetName);
     this[widgetName] = {
       widget: widgetFunc,
       props,
