@@ -112,6 +112,7 @@ const render = (
   scrollIntoView();
 };
 
+console.log("Start ci");
 window.vanillaJsChatbot = { renderChatbot, createChatBotMessage };
 
 export { createChatBotMessage };
