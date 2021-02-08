@@ -4,7 +4,7 @@ stages:
 
 build-package:
   stage: build
-  image: node:latest
+  image: node:15.4
   script:
     - npm install
     - npm run build
