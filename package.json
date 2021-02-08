@@ -2,9 +2,8 @@
   "name": "@foseberg/chatbot-js",
   "version": "0.0.2",
   "description": "Fully customizable chatbot in vanilla js",
-  "main": "dist/index.js",
   "dependencies": {},
-  "type": "module",
+  "module": "dist/index.js",
   "devDependencies": {
     "@babel/core": "^7.12.13",
     "@babel/preset-env": "^7.12.13",
