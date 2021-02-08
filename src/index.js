@@ -100,6 +100,7 @@ const render = (
     updater,
     widgetRegistry
   );
+
   current = chat;
   rootEl.appendChild(chat);
 
@@ -112,3 +113,6 @@ const render = (
 };
 
 window.vanillaJsChatbot = { renderChatbot, createChatBotMessage };
+
+export { createChatBotMessage };
+export default renderChatbot;

@@ -1,0 +1,32 @@
+{
+  "name": "@foseberg/chatbot-js",
+  "version": "0.0.2",
+  "description": "Fully customizable chatbot in vanilla js",
+  "main": "dist/index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "css-loader": "^5.0.2",
+    "mini-css-extract-plugin": "^1.3.6",
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode='production'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FredrikOseberg/chatbot-js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FredrikOseberg/chatbot-js/issues"
+  },
+  "homepage": "https://github.com/FredrikOseberg/chatbot-js#readme"
+}
